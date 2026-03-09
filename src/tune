@@ -1,0 +1,33 @@
+# src/tune.py
+import pandas as pd
+import mlflow
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import train_test_split
+
+# Load train.csv
+data = pd.read_csv("data/train.csv")
+X = data.drop("price", axis=1)
+y = data["price"]
+
+# Train/validation split
+X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Hyperparameters to test
+n_estimators_list = [50, 100]
+max_depth_list = [5, 10]
+
+with mlflow.start_run(run_name="hyperparameter_tuning"):
+    for n in n_estimators_list:
+        for depth in max_depth_list:
+            with mlflow.start_run(nested=True):
+                model = RandomForestRegressor(n_estimators=n, max_depth=depth, random_state=42)
+                model.fit(X_train, y_train)
+                preds = model.predict(X_val)
+                mse = mean_squared_error(y_val, preds)
+                
+                mlflow.log_param("n_estimators", n)
+                mlflow.log_param("max_depth", depth)
+                mlflow.log_metric("mse", mse)
+                
+                print(f"n_estimators={n}, max_depth={depth}, mse={mse:.2f}")
