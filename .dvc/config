@@ -1,6 +1,6 @@
 [core]
     remote = origin
 ['remote "origin"']
-    url = https://dagshub.com/USERNAME/ml-pipeline-housing.dvc
-    user = USERNAME
-    password = TOKEN
+    url = https://dagshub.com/MalakM7md/ml-pipeline-housing.dvc
+    user = MalakM7md
+    password = ec912b2a1233bf58c563539f06987589795737a7
